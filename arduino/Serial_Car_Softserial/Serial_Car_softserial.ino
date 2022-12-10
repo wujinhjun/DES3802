@@ -267,7 +267,7 @@ void loop()
     }
     delay(10);
     num = num + 1;
-    if (num > 50)
+    if (num > 70)
     {
         stopCar();
     }
