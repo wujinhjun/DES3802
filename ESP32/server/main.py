@@ -1,15 +1,14 @@
-from microWebSrv import MicroWebSrv
 import json
 import machine
 import utime
-
-led = machine.Pin(2, machine.Pin.OUT)
-uart = machine.UART(2, 115200)
+import wifi.wifimgr as wifimgr
+from mws.microWebSrv import MicroWebSrv as MicroWebSrv
 
 # ----------------------------------------------------------------------------
 
+
 @MicroWebSrv.route('/test')
-def _httpHandlerTestGet(httpClient, httpResponse) :
+def _httpHandlerTestGet(httpClient, httpResponse):
     content = """\
     <!DOCTYPE html>
     <html lang=en>
@@ -25,23 +24,27 @@ def _httpHandlerTestGet(httpClient, httpResponse) :
         </body>
     </html>
     """ % httpClient.GetIPAddr()
-    httpResponse.WriteResponseOk( headers		 = None,
-                                  contentType	 = "text/html",
-                                  contentCharset = "UTF-8",
-                                  content 		 = content )
+    httpResponse.WriteResponseOk(headers=None,
+                                 contentType="text/html",
+                                 contentCharset="UTF-8",
+                                 content=content)
+
 
 @MicroWebSrv.route('/test2')
-def _httpHandlerTestGet(httpClient, httpResponse) :
+def _httpHandlerTestGet(httpClient, httpResponse):
     content = "hello"
-    httpResponse.WriteResponseOk( headers = None,  contentType = "application/json",  contentCharset = "UTF-8", content = content.encode() )
-    
+    httpResponse.WriteResponseOk(headers=None,  contentType="application/json",
+                                 contentCharset="UTF-8", content=content.encode())
+
+
 @MicroWebSrv.route('/test2', "POST")
-def _httpHandlerTestGet(httpClient, httpResponse) :
-    formData = httpClient.ReadRequestContentAsJSON();
+def _httpHandlerTestGet(httpClient, httpResponse):
+    formData = httpClient.ReadRequestContentAsJSON()
     print(formData)
     content = formData['command']
     #content = "hello"
-    httpResponse.WriteResponseOk( headers = None,  contentType = "application/json",  contentCharset = "UTF-8", content = content.encode())
+    httpResponse.WriteResponseOk(headers=None,  contentType="application/json",
+                                 contentCharset="UTF-8", content=content.encode())
     uart.write(f'{content}a')
     print("uart")
     # 等待1s钟
@@ -58,31 +61,53 @@ def _httpHandlerTestGet(httpClient, httpResponse) :
 
 # ----------------------------------------------------------------------------
 
-def _acceptWebSocketCallback(webSocket, httpClient) :
-    print("WS ACCEPT")
-    webSocket.RecvTextCallback   = _recvTextCallback
-    webSocket.RecvBinaryCallback = _recvBinaryCallback
-    webSocket.ClosedCallback 	 = _closedCallback
 
-def _recvTextCallback(webSocket, msg) :
+def _acceptWebSocketCallback(webSocket, httpClient):
+    print("WS ACCEPT")
+    webSocket.RecvTextCallback = _recvTextCallback
+    webSocket.RecvBinaryCallback = _recvBinaryCallback
+    webSocket.ClosedCallback = _closedCallback
+
+
+def _recvTextCallback(webSocket, msg):
     print("WS RECV TEXT : %s" % msg)
     webSocket.SendText("Reply for %s" % msg)
 
-def _recvBinaryCallback(webSocket, data) :
+
+def _recvBinaryCallback(webSocket, data):
     print("WS RECV DATA : %s" % data)
 
-def _closedCallback(webSocket) :
+
+def _closedCallback(webSocket):
     print("WS CLOSED")
 
 # ----------------------------------------------------------------------------
 
-#routeHandlers = [
+# routeHandlers = [
 #	( "/test",	"GET",	_httpHandlerTestGet ),
 #	( "/test",	"POST",	_httpHandlerTestPost )
-#]
+# ]
+
+
+wlan = wifimgr.get_connection()
+
+if wlan is None:
+    print("Could not initialize the network connection.")
+    while True:
+        print("connect")
+        #pass  # you shall not pass :D
+
+print("ESP WIFI OK")
+led = machine.Pin(2, machine.Pin.OUT)
+uart = machine.UART(2, 115200)
 
 srv = MicroWebSrv(webPath='www/')
 srv.MaxWebSocketRecvLen = 256
 srv.WebSocketThreaded = False
 srv.AcceptWebSocketCallback = _acceptWebSocketCallback
 srv.Start()
+
+# Main Code goes here, wlan is a working network.WLAN(STA_IF) instance.
+print("ESP OK")
+
+# ----------------------------------------------------------------------------
