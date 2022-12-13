@@ -43,8 +43,10 @@ def _httpHandlerTestGet(httpClient, httpResponse):
     print(formData)
     content = formData['command']
     #content = "hello"
+    reply = {"status": True}
+    reply = json.dumps(reply)
     httpResponse.WriteResponseOk(headers=None,  contentType="application/json",
-                                 contentCharset="UTF-8", content=content.encode())
+                                 contentCharset="UTF-8", content=reply)
     uart.write(f'{content}a')
     print("uart")
     # 等待1s钟
