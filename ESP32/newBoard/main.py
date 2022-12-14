@@ -55,11 +55,12 @@ def _httpHandlerTestGet(httpClient, httpResponse):
         # 如果有数据 读入一行数据返回数据为字节类型
         # 例如  b'hello 1\n'
         bin_data = uart.readline()
+        print(bin_data)
         # 将手到的信息打印在终端
-        print('Echo Byte: {}'.format(bin_data))
+        # print('Echo Byte: {}'.format(bin_data))
 
-        # 将字节数据转换为字符串 字节默认为UTF-8编码
-        print('Echo String: {}'.format(bin_data.decode()))
+        # # 将字节数据转换为字符串 字节默认为UTF-8编码
+        # print('Echo String: {}'.format(bin_data.decode()))
 
 # ----------------------------------------------------------------------------
 

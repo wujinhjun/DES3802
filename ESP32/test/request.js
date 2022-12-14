@@ -1,7 +1,7 @@
 const axios = require('axios');
 
-// const url = "http://192.168.137.29/test2"
-const url = "https://51967l20e0.yicp.fun/test2"
+const url = "http://192.168.137.193:8080/test2"
+// const url = "https://51967l20e0.yicp.fun/test2"
 
 const argv = process.argv;
 
