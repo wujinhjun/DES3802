@@ -1,3 +1,26 @@
+const bodyEle = document.getElementsByTagName("body")[0];
+const btn = document.getElementById("btn");
+
+btn.onclick = () => {
+    if (bodyEle.requestFullscreen) {
+        bodyEle.requestFullscreen();
+        console.log("ok");
+    }
+    screen.orientation.lock("landscape")
+        .then(() => {
+            console.log("yes!!!");
+        })
+        .catch((err) => {
+            console.error(err);
+        })
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    }
+
+}
+
+
+
 if (window.DeviceOrientationEvent) {
     window.addEventListener("deviceorientation", function (event) {
         // // alpha: rotation around z-axis
@@ -23,14 +46,14 @@ const handleOrientationEvent = function (x) {
     // console.log(typeof pX);
     const tempX = x.toFixed(1);
     if (Math.abs(pX - tempX) > 1) {
-        console.log(`pX: ${pX}`);
-        console.log(`tempX: ${tempX}`);
+        // console.log(`pX: ${pX}`);
+        // console.log(`tempX: ${tempX}`);
         target.innerHTML = tempX;
         myHttp();
     }
 };
 
 const myHttp = () => {
-    console.log("hello");
+    // console.log("hello");
     return 0;
 }
