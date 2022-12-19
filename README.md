@@ -6,6 +6,10 @@
 
 ***
 
+现已迁移至新的仓库[KarKit-GO](https://github.com/KarKit-Go/DES3802_interactionDesign)
+
+***
+
 ## 组成
 
 ### 硬件端
